@@ -3,8 +3,15 @@ import Link from "next/link";
 import componentsImg from "./assets/components.svg";
 import { DownArrow, RightArrow } from "./icons";
 import "./home.css";
+import { clerkClient } from "@clerk/nextjs/server";
 
-export default function Home() {
+export default async function Home() {
+  const userId = "user_2V7JJKmoA9HqzHhfMqK5cpgLl56";
+
+  const sessions = await clerkClient.sessions.getSessionList({ userId });
+
+  console.log(sessions);
+
   return (
     <main className="">
       <article className="grid lg:grid-cols-2">

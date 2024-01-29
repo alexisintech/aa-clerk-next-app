@@ -1,9 +1,12 @@
-import { auth, clerkClient } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { OrgDetails, SessionDetails, UserDetails } from "./details";
 import Link from "next/link";
+import InvitationList from "./invitation-list";
+import MemberList from "./organization-memberships";
+import CustomOrganizationSwitcher from "./org-switcher"
 
-export default async function DashboardPage() {
+export default async function DashboardPage() {  
   const { userId } = auth();
 
   if (!userId) {
@@ -12,7 +15,12 @@ export default async function DashboardPage() {
 
   const user = await clerkClient.users.getUser(userId);
 
+  if (!user) {
+    redirect("/");
+  }
+
   return (
+    <>
     <div className="px-8 py-12 sm:py-16 md:px-20">
       {user && (
         <>
@@ -38,5 +46,11 @@ export default async function DashboardPage() {
         </>
       )}
     </div>
+    <div>
+      <InvitationList />
+      <MemberList />
+      <CustomOrganizationSwitcher />
+    </div>
+    </>
   );
 }
