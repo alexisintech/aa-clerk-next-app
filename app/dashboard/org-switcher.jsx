@@ -31,10 +31,13 @@ export default function CustomOrganizationSwitcher() {
   }
 
   return (
-    <Select
-      options={createOrganizationOptions(userMemberships)}
-      onChange={handleOrgChange}
-      value={{ value: organization.id, label: organization.name }}
-    />
+    <>
+      <h2 className="text-lg font-bold">Custom Organization Switcher</h2>
+      <Select
+        options={createOrganizationOptions(userMemberships)}
+        onChange={handleOrgChange}
+        value={{ value: organization.id, label: organization.name }}
+      />
+    </>
   );
 }

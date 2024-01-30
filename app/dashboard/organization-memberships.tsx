@@ -17,7 +17,7 @@ export default function MemberList() {
  
   return (
     <div>
-      <h2>Organization members</h2>
+      <h2 className="text-lg font-bold">Organization members</h2>
       <ul>
         {memberships.data?.map((membership) => (
           <li key={membership.id}>
@@ -30,6 +30,7 @@ export default function MemberList() {
       <button
         disabled={!memberships.hasNextPage}
         onClick={memberships.fetchNext}
+        className="italic text-neutral-600"
       >
         Load more
       </button>

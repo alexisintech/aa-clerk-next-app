@@ -43,13 +43,13 @@ export default async function DashboardPage() {
           >
             Clerk Docs -&gt;
           </Link>
+          <div className="mt-5 space-y-5 flex-column">
+            <InvitationList />
+            <MemberList />
+            <CustomOrganizationSwitcher />
+          </div>
         </>
       )}
-    </div>
-    <div>
-      <InvitationList />
-      <MemberList />
-      <CustomOrganizationSwitcher />
     </div>
     </>
   );

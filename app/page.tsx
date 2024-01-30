@@ -6,11 +6,9 @@ import "./home.css";
 import { clerkClient } from "@clerk/nextjs/server";
 
 export default async function Home() {
-  const userId = "user_2V7JJKmoA9HqzHhfMqK5cpgLl56";
+  const response = await clerkClient.users.getUserList();
 
-  const sessions = await clerkClient.sessions.getSessionList({ userId });
-
-  console.log(sessions);
+  console.log(response);
 
   return (
     <main className="">

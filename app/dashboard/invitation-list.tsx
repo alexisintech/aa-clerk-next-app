@@ -69,10 +69,10 @@ export default function InvitationList() {
 
   return (
     <div>
-      <h2>Invite member</h2>
+      <h2 className="text-lg font-bold">Invite member</h2>
       <InviteMember />
 
-      <h2>Pending invitations</h2>
+      <h2 className="text-lg font-bold">Pending invitations</h2>
       
         {invitations.data && invitations.data.length ? invitations.data?.map(i => (
           <ul>
