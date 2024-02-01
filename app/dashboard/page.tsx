@@ -4,7 +4,7 @@ import { OrgDetails, SessionDetails, UserDetails } from "./details";
 import Link from "next/link";
 import InvitationList from "./invitation-list";
 import MemberList from "./organization-memberships";
-import CustomOrganizationSwitcher from "./org-switcher";
+import { CustomOrganizationSwitcher } from "./org-switcher";
 
 export default async function DashboardPage() {  
   const { userId } = auth();
