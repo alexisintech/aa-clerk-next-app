@@ -6,9 +6,6 @@ import "./home.css";
 import { clerkClient } from "@clerk/nextjs/server";
 
 export default async function Home() {
-  const response = await clerkClient.users.getUserList();
-
-  console.log(response);
 
   return (
     <main className="">

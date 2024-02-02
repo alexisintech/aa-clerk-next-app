@@ -1,23 +1,33 @@
 "use client"
-import React, { SyntheticEvent, useState } from 'react';
-import { useSignIn } from '@clerk/nextjs';
+import React, { useState } from 'react';
+import { useAuth, useSignIn } from '@clerk/nextjs';
 import type { NextPage } from 'next';
+import { useRouter } from 'next/navigation';
 
-const SignInPage: NextPage = () => {
+const ForgotPasswordPage: NextPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [successfulCreation, setSuccessfulCreation] = useState(false);
-  const [complete, setComplete] = useState(false);
   const [secondFactor, setSecondFactor] = useState(false);
+  const [error, setError] = useState('');
 
+  const router = useRouter();
+  const { isSignedIn } = useAuth();
   const { isLoaded, signIn, setActive } = useSignIn();
 
   if (!isLoaded) {
     return null;
   }
 
-  async function create(e: SyntheticEvent) {
+  // If the user is already signed in,
+  // redirect them to the home page
+  if (isSignedIn) {
+    router.push('/');
+  }
+
+  // Send the password reset code to the user's email
+  async function create(e: React.FormEvent) {
     e.preventDefault();
     await signIn
       ?.create({
@@ -26,11 +36,18 @@ const SignInPage: NextPage = () => {
       })
       .then(_ => {
         setSuccessfulCreation(true);
+        setError('');
       })
-      .catch(err => console.error('error', err.errors[0].longMessage));
+      .catch(err => {
+        console.error('error', err.errors[0].longMessage);
+        setError(err.errors[0].longMessage);
+      });
   }
 
-  async function reset(e: SyntheticEvent) {
+  // Reset the user's password. 
+  // Upon successful reset, the user will be 
+  // signed in and redirected to the home page
+  async function reset(e: React.FormEvent) {
     e.preventDefault();
     await signIn
       ?.attemptFirstFactor({
@@ -41,14 +58,20 @@ const SignInPage: NextPage = () => {
       .then(result => {
         if (result.status === 'needs_second_factor') {
           setSecondFactor(true);
+          setError('');
         } else if (result.status === 'complete') {
+          // Set the active session to 
+          // the newly created session (user is now logged in)
           setActive({ session: result.createdSessionId });
-          setComplete(true);
+          setError('');
         } else {
           console.log(result);
         }
       })
-      .catch(err => console.error('error', err.errors[0].longMessage));
+      .catch(err => {
+        console.error('error', err.errors[0].longMessage)
+        setError(err.errors[0].longMessage);
+      });
   }
 
   return (
@@ -67,7 +90,7 @@ const SignInPage: NextPage = () => {
         }}
         onSubmit={!successfulCreation ? create : reset}
       >
-        {!successfulCreation && !complete && (
+        {!successfulCreation && (
           <>
             <label htmlFor='email'>Please provide your email address</label>
             <input
@@ -77,11 +100,12 @@ const SignInPage: NextPage = () => {
               onChange={e => setEmail(e.target.value)}
             />
 
-            <button>Sign in</button>
+            <button>Send password reset code</button>
+            {error && <p>{error}</p>}
           </>
         )}
 
-        {successfulCreation && !complete && (
+        {successfulCreation && (
           <>
             <label htmlFor='password'>Enter your new password</label>
             <input
@@ -98,14 +122,14 @@ const SignInPage: NextPage = () => {
             />
 
             <button>Reset</button>
+            {error && <p>{error}</p>}
           </>
         )}
 
-        {complete && 'You successfully changed your password'}
-        {secondFactor && '2FA is required, this UI does not handle that'}
+        {secondFactor && <p>2FA is required, this UI does not handle that</p>}
       </form>
     </div>
   );
 };
 
-export default SignInPage;
+export default ForgotPasswordPage;
