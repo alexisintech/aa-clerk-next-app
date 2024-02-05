@@ -5,7 +5,7 @@ import Link from "next/link";
 import InvitationList from "./invitation-list";
 import MemberList from "./organization-memberships";
 import { CustomOrganizationSwitcher } from "./org-switcher";
-import { OrganizationProfile } from "@clerk/nextjs";
+import { OrganizationProfile, useUser } from "@clerk/nextjs";
 
 export default async function DashboardPage() {  
   const { userId } = auth();
@@ -15,6 +15,8 @@ export default async function DashboardPage() {
   }
 
   const user = await clerkClient.users.getUser(userId);
+
+  console.log(user);
 
   if (!user) {
     redirect("/");

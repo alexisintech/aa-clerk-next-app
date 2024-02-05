@@ -3,7 +3,6 @@ import Link from "next/link";
 import componentsImg from "./assets/components.svg";
 import { DownArrow, RightArrow } from "./icons";
 import "./home.css";
-import { clerkClient } from "@clerk/nextjs/server";
 
 export default async function Home() {
 
