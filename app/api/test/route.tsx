@@ -1,13 +1,14 @@
 import { clerkClient } from "@clerk/nextjs/server";
 
-// testclerk123 userId: user_2bxfCJOe0Ocd8DNe9hFN3EXvfOu
+// testclerk123 userId: user_2cSSCzV7948rhPJMsY601tXsEU4
 
 export async function GET() {
-  const response = await clerkClient.users.verifyPassword({
-    userId: "user_2bxfCJOe0Ocd8DNe9hFN3EXvfOu",
-    password: "testclerk1234"
-  })
-  
+  const userId = 'user_2V7JJKmoA9HqzHhfMqK5cpgLl56';
+
+  const provider = 'oauth_google';
+
+  const response = await clerkClient.users.getUserOauthAccessToken(userId, provider);
+
   console.log(response);
 
   return Response.json({ message: "success" })

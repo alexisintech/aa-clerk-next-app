@@ -5,9 +5,9 @@ import Link from "next/link";
 import InvitationList from "./invitation-list";
 import MemberList from "./organization-memberships";
 import { CustomOrganizationSwitcher } from "./org-switcher";
-import { OrganizationProfile, useUser } from "@clerk/nextjs";
+import JoinedOrganizationList from "./joined-organizations";
 
-export default async function DashboardPage() {  
+export default async function DashboardPage() {
   const { userId } = auth();
 
   if (!userId) {
@@ -47,6 +47,7 @@ export default async function DashboardPage() {
             Clerk Docs -&gt;
           </Link>
           <div className="mt-5 space-y-5 flex-column">
+            <JoinedOrganizationList />
             <InvitationList />
             <MemberList />
             <CustomOrganizationSwitcher />
