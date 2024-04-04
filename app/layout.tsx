@@ -83,7 +83,7 @@ export default function RootLayout({
                   }}
                 />
               </div>
-              <UserButton afterSignOutUrl="/" userProfileMode="navigation" userProfileUrl="/user-profile" />
+              <UserButton afterSignOutUrl="/" />
             </SignedIn>
           </header>
           <main className="grow">{children}</main>

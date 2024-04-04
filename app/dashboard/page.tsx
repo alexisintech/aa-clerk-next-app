@@ -2,25 +2,21 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { OrgDetails, SessionDetails, UserDetails } from "./details";
 import Link from "next/link";
-import InvitationList from "./invitation-list";
+import InvitationsList from "./invitations-list";
 import MemberList from "./organization-memberships";
-import { CustomOrganizationSwitcher } from "./org-switcher";
-import JoinedOrganizationList from "./joined-organizations";
+import { CustomOrganizationSwitcher } from "./custom-org-switcher";
+import UserInvitationsList from "./user-invitations-list";
 
 export default async function DashboardPage() {
   const { userId } = auth();
 
   if (!userId) {
-    redirect("/");
+    auth().protect();
   }
 
-  const user = await clerkClient.users.getUser(userId);
+  const user = await clerkClient.users.getUser(userId!);
 
   console.log(user);
-
-  if (!user) {
-    redirect("/");
-  }
 
   return (
     <>
@@ -47,8 +43,8 @@ export default async function DashboardPage() {
             Clerk Docs -&gt;
           </Link>
           <div className="mt-5 space-y-5 flex-column">
-            <JoinedOrganizationList />
-            <InvitationList />
+            <UserInvitationsList />
+            <InvitationsList />
             <MemberList />
             <CustomOrganizationSwitcher />
           </div>

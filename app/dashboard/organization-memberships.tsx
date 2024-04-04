@@ -1,7 +1,9 @@
+// Renders a list of memberships for an organization.
+
 "use client"
 
 import { useOrganization } from "@clerk/nextjs";
- 
+
 export default function MemberList() {
   const { memberships } = useOrganization({
     memberships: {
@@ -9,12 +11,12 @@ export default function MemberList() {
       keepPreviousData: true,
     },
   });
- 
+
   if (!memberships) {
     // loading state
     return null;
   }
- 
+
   return (
     <div>
       <h2 className="text-lg font-bold">Organization members</h2>
@@ -26,7 +28,7 @@ export default function MemberList() {
           </li>
         ))}
       </ul>
- 
+
       <button
         disabled={!memberships.hasNextPage}
         onClick={memberships.fetchNext}

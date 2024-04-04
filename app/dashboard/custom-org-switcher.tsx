@@ -1,20 +1,20 @@
 "use client"
- 
+
 import { useOrganizationList } from "@clerk/nextjs";
- 
+
 export const CustomOrganizationSwitcher = () => {
   const { isLoaded, setActive, userMemberships } = useOrganizationList({
     userMemberships: {
       infinite: true,
     },
   });
- 
+
   if (!isLoaded) {
     return <>Loading</>;
   }
 
   console.log(userMemberships);
- 
+
   return (
     <>
       <h2 className="text-lg font-bold">Custom Organization Switcher</h2>
@@ -30,7 +30,7 @@ export const CustomOrganizationSwitcher = () => {
           </li>
         ))}
       </ul>
- 
+
       <button
         disabled={!userMemberships.hasNextPage}
         onClick={() => userMemberships.fetchNext()}
@@ -40,4 +40,3 @@ export const CustomOrganizationSwitcher = () => {
     </>
   );
 };
- 

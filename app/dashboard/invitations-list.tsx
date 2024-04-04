@@ -1,3 +1,6 @@
+// Renders a form for inviting a new member to an organization.
+// Renders a list of pending invitations for an organization.
+
 "use client"
 
 import { useOrganization } from '@clerk/nextjs';
@@ -73,7 +76,7 @@ export default function InvitationList() {
       <InviteMember />
 
       <h2 className="text-lg font-bold">Pending invitations</h2>
-      
+
         {invitations.data && invitations.data.length ? invitations.data?.map(i => (
           <ul>
           <li key={i.id}>

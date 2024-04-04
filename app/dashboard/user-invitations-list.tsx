@@ -1,9 +1,11 @@
+// Renders a list of invitations for the user to join organizations.
+
 'use client'
 
 import { useOrganizationList } from "@clerk/clerk-react";
 import React from "react";
 
-const InvitationsTable = () => {
+const UserInvitationsList = () => {
   const { isLoaded, userInvitations } = useOrganizationList({
     userInvitations: {
       infinite: true,
@@ -51,4 +53,4 @@ const InvitationsTable = () => {
   );
 };
 
-export default InvitationsTable;
+export default UserInvitationsList;
