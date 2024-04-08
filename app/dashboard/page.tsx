@@ -2,10 +2,10 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { OrgDetails, SessionDetails, UserDetails } from "./details";
 import Link from "next/link";
-import InvitationsList from "./invitations-list";
-import MemberList from "./organization-memberships";
-import { CustomOrganizationSwitcher } from "./custom-org-switcher";
-import UserInvitationsList from "./user-invitations-list";
+import InvitationsList from "../components/InvitationsList";
+import MemberList from "../components/OrgMemberships";
+import UserInvitationsList from "../components/UserInvitationsList";
+import { CustomOrganizationSwitcher } from "../components/CustomOrgSwitcher";
 
 export default async function DashboardPage() {
   const { userId } = auth();

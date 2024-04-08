@@ -13,8 +13,6 @@ export const CustomOrganizationSwitcher = () => {
     return <>Loading</>;
   }
 
-  console.log(userMemberships);
-
   return (
     <>
       <h2 className="text-lg font-bold">Custom Organization Switcher</h2>

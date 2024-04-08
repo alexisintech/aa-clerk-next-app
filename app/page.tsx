@@ -5,7 +5,6 @@ import { DownArrow, RightArrow } from "./icons";
 import "./home.css";
 
 export default async function Home() {
-
   return (
     <main className="">
       <article className="grid lg:grid-cols-2">
