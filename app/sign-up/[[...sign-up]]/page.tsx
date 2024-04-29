@@ -67,7 +67,7 @@ export default function Page() {
   if (verifying) {
     return (
       <form onSubmit={handleVerification}>
-        <label htmlFor="code">Code</label>
+        <label htmlFor="code">Enter your verification code</label>
         <input
           value={code}
           id="code"
