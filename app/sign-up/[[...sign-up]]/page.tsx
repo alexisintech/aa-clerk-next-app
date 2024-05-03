@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { useSignUp } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import * as React from 'react';
+import { useSignUp } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [verifying, setVerifying] = React.useState(false);
-  const [phone, setPhone] = React.useState("");
-  const [code, setCode] = React.useState("");
+  const [phone, setPhone] = React.useState('');
+  const [code, setCode] = React.useState('');
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -17,7 +17,7 @@ export default function Page() {
     if (!isLoaded && !signUp) return null;
 
     try {
-      // Start the Sign Up process using the phone number method
+      // Start the sign-up process using the phone number method
       await signUp.create({
         phoneNumber: phone,
       });
@@ -26,11 +26,11 @@ export default function Page() {
       // number with a one-time code
       await signUp.preparePhoneNumberVerification();
 
-      // Set 'verifying' true to display second form and capture the OTP code
+      // Set verifying to true to display second form and capture the OTP code
       setVerifying(true);
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
-      console.error("Error:", JSON.stringify(err, null, 2));
+      console.error('Error:', JSON.stringify(err, null, 2));
     }
   }
 
@@ -47,35 +47,38 @@ export default function Page() {
 
       // This mainly for debuggin while developing.
       // Once your Instance is setup this should not be required.
-      if (completeSignUp.status !== "complete") {
+      if (completeSignUp.status !== 'complete') {
         console.error(JSON.stringify(completeSignUp, null, 2));
       }
 
-      // If verification was completed, create a session for the user
-      if (completeSignUp.status === "complete") {
+      // If verification was completed, set the session to active
+      // and redirect the user
+      if (completeSignUp.status === 'complete') {
         await setActive({ session: completeSignUp.createdSessionId });
 
-        // redirect user
-        router.push("/");
+        router.push('/');
       }
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
-      console.error("Error:", JSON.stringify(err, null, 2));
+      console.error('Error:', JSON.stringify(err, null, 2));
     }
   }
 
   if (verifying) {
     return (
-      <form onSubmit={handleVerification}>
-        <label htmlFor="code">Enter your verification code</label>
-        <input
-          value={code}
-          id="code"
-          name="code"
-          onChange={(e) => setCode(e.target.value)}
-        />
-        <button type="submit">Verify</button>
-      </form>
+      <>
+        <h1>Verify your phone number</h1>
+        <form onSubmit={handleVerification}>
+          <label htmlFor="code">Enter your verification code</label>
+          <input
+            value={code}
+            id="code"
+            name="code"
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <button type="submit">Verify</button>
+        </form>
+      </>
     );
   }
 
@@ -83,7 +86,7 @@ export default function Page() {
     <>
       <h1>Sign up</h1>
       <form onSubmit={handleSubmit}>
-        <label id="phone">Enter phone number</label>
+        <label htmlFor="phone">Enter phone number</label>
         <input
           value={phone}
           id="phone"
