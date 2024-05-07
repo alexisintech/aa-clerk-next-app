@@ -9,10 +9,12 @@ export default function Page() {
   const [verifying, setVerifying] = React.useState(false);
   const [phone, setPhone] = React.useState('');
   const [code, setCode] = React.useState('');
+  const [error, setError] = React.useState('');
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
 
     if (!isLoaded && !signUp) return null;
 
@@ -31,11 +33,13 @@ export default function Page() {
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
       console.error('Error:', JSON.stringify(err, null, 2));
+      setError(JSON.stringify(err, null, 2));
     }
   }
 
   async function handleVerification(e: React.FormEvent) {
     e.preventDefault();
+    setError('');
 
     if (!isLoaded && !signUp) return null;
 
@@ -45,7 +49,7 @@ export default function Page() {
         code,
       });
 
-      // This mainly for debuggin while developing.
+      // This is mainly for debugging while developing.
       // Once your Instance is setup this should not be required.
       if (completeSignUp.status !== 'complete') {
         console.error(JSON.stringify(completeSignUp, null, 2));
@@ -61,6 +65,7 @@ export default function Page() {
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
       console.error('Error:', JSON.stringify(err, null, 2));
+      setError(JSON.stringify(err, null, 2));
     }
   }
 
@@ -78,6 +83,7 @@ export default function Page() {
           />
           <button type="submit">Verify</button>
         </form>
+        <p>{error}</p>
       </>
     );
   }
@@ -96,6 +102,7 @@ export default function Page() {
         />
         <button type="submit">Continue</button>
       </form>
+      <p>{error}</p>
     </>
   );
 }
