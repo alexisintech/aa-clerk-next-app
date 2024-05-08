@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@clerk/elements": "^0.3.2",
-    "@clerk/nextjs": "^5.0.4",
+    "@clerk/nextjs": "^5.0.6",
     "@clerk/themes": "^1.7.9",
-    "@clerk/types": "^4.0.0-beta-v5.13",
+    "@clerk/types": "^4.2.0",
     "@emotion/react": "^11.11.3",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
@@ -30,7 +30,7 @@
     "react-dom": "18.2.0",
     "react-select": "^5.8.0",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss": "3.3.2",
+    "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.0.4"
   }
