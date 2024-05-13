@@ -10,13 +10,11 @@ export default function Page() {
   const [password, setPassword] = React.useState('');
   const [verifying, setVerifying] = React.useState(false);
   const [code, setCode] = React.useState('');
-  const [error, setError] = React.useState('');
   const router = useRouter();
 
   // Handle submission of the sign-up form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
 
     if (!isLoaded) return;
 
@@ -36,15 +34,15 @@ export default function Page() {
       // and capture the OTP code
       setVerifying(true);
     } catch (err: any) {
-      console.error('Error:', JSON.stringify(err, null, 2));
-      setError(JSON.stringify(err, null, 2));
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
+      console.error(JSON.stringify(err, null, 2));
     }
   };
 
   // Handle the submission of the verification form
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
 
     if (!isLoaded) return;
 
@@ -54,21 +52,20 @@ export default function Page() {
         code,
       });
 
-      // This is mainly for debugging while developing.
-      if (completeSignUp.status !== 'complete') {
-        console.log(JSON.stringify(completeSignUp, null, 2));
-        setError(JSON.stringify(completeSignUp, null, 2));
-      }
-
       // If verification was completed, set the session to active
       // and redirect the user
       if (completeSignUp.status === 'complete') {
         await setActive({ session: completeSignUp.createdSessionId });
         router.push('/');
+      } else {
+        // If the status is not complete, check why. User may need to
+        // complete further steps.
+        console.error(JSON.stringify(completeSignUp, null, 2));
       }
     } catch (err: any) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
       console.error('Error:', JSON.stringify(err, null, 2));
-      setError(JSON.stringify(err, null, 2));
     }
   };
 
@@ -87,7 +84,6 @@ export default function Page() {
           />
           <button type="submit">Verify</button>
         </form>
-        <p>{error}</p>
       </>
     );
   }
@@ -121,7 +117,6 @@ export default function Page() {
           <button type="submit">Next</button>
         </div>
       </form>
-      <p>{error}</p>
     </>
   );
 }

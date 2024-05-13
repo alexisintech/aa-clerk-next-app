@@ -1,8 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
-import componentsImg from "./assets/components.svg";
-import { DownArrow, RightArrow } from "./icons";
-import "./home.css";
+import Image from 'next/image';
+import Link from 'next/link';
+import componentsImg from './assets/components.svg';
+import { DownArrow, RightArrow } from './icons';
+import './home.css';
 
 export default async function Home() {
   return (
@@ -48,7 +48,7 @@ export default async function Home() {
         <h2 className="text-3xl font-semibold">What's under the hood?</h2>
         <p className="mt-2">
           This template repo uses some of the following features provided by
-          Clerk. To learn more, read the{" "}
+          Clerk. To learn more, read the{' '}
           <a
             href="https://clerk.com/docs?utm_source=vercel-template&utm_medium=template_repos&utm_campaign=nextjs_template"
             className="font-medium text-primary-600 hover:underline"

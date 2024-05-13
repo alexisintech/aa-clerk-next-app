@@ -3,18 +3,23 @@
 import * as React from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
+import { ClerkAPIError } from '@clerk/types';
+import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 
 export default function SignInForm() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState('');
+  const [errors, setErrors] = React.useState<ClerkAPIError[]>();
+
   const router = useRouter();
 
   // Handle the submission of the sign-in form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+
+    // clear any errors that may have occured during previous form submission
+    setErrors(undefined);
 
     if (!isLoaded) {
       return;
@@ -30,7 +35,6 @@ export default function SignInForm() {
       // This is mainly for debugging while developing.
       if (completeSignIn.status !== 'complete') {
         console.log(JSON.stringify(completeSignIn, null, 2));
-        setError(JSON.stringify(completeSignIn, null, 2));
       }
 
       // If sign-in process is complete, set the created session as active
@@ -39,9 +43,9 @@ export default function SignInForm() {
         await setActive({ session: completeSignIn.createdSessionId });
         router.push('/');
       }
-    } catch (err: any) {
+    } catch (err) {
+      if (isClerkAPIResponseError(err)) setErrors(err.errors);
       console.error(JSON.stringify(err, null, 2));
-      setError(JSON.stringify(err, null, 2));
     }
   };
 
@@ -72,7 +76,14 @@ export default function SignInForm() {
         </div>
         <button type="submit">Sign in</button>
       </form>
-      <p>{error}</p>
+
+      {errors && (
+        <ul>
+          {errors.map((el, index) => (
+            <li key={index}>{el.longMessage}</li>
+          ))}
+        </ul>
+      )}
     </>
   );
 }
