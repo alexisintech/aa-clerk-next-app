@@ -1,8 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { OAuthStrategy } from '@clerk/types';
-import { SignInButton, useSignIn, useSignUp } from '@clerk/nextjs';
+import { useSignIn, useSignUp } from '@clerk/nextjs';
 
 export default function OauthSignIn() {
   const { signIn } = useSignIn();
@@ -10,13 +9,12 @@ export default function OauthSignIn() {
 
   if (!signIn || !signUp) return null;
 
-  async function handleSignIn(strategy: OAuthStrategy) {
+  async function handleSignIn(e: React.FormEvent) {
     if (!signIn || !signUp) return null;
 
     // If the user has an account in your application, but does not yet
-    // have an OAuth account connected to it, you can transfer the OAuth
+    // have a SAML account connected to it, you can transfer the SAML
     // account to the existing user account.
-
     const userExistsButNeedsToSignIn =
       signUp.verifications.externalAccount.status === 'transferable' &&
       signUp.verifications.externalAccount.error?.code ===
@@ -32,8 +30,9 @@ export default function OauthSignIn() {
       }
     }
 
-    // If the user has an OAuth account but does not yet have an account in your app, you can create an account for them using the OAuth account.
-
+    // If the user has a SAML account but does not yet
+    // have an account in your app, you can create an account
+    // for them using the SAML information.
     const userNeedsToBeCreated =
       signIn.firstFactorVerification.status === 'transferable';
 
@@ -48,26 +47,39 @@ export default function OauthSignIn() {
         });
       }
     } else {
-      signInWith(strategy);
+      // If the user has an account in your application
+      // and has an SAML account connected to it, you can sign them in.
+      signInWith(e);
     }
   }
 
-  const signInWith = (strategy: OAuthStrategy) => {
-    return signIn.authenticateWithRedirect({
-      strategy,
-      redirectUrl: '/sign-up/sso-callback',
-      redirectUrlComplete: '/',
-    });
+  const signInWith = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const email = (e.target as HTMLFormElement).email.value;
+
+    signIn
+      .authenticateWithRedirect({
+        identifier: email,
+        strategy: 'saml',
+        redirectUrl: '/sso-callback',
+        redirectUrlComplete: '/',
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err: any) => {
+        console.log(err.errors);
+        console.error(err, null, 2);
+      });
   };
 
   // Render a button for each supported OAuth provider
   // you want to add to your app
   return (
-    <div>
-      <button onClick={() => handleSignIn('oauth_google')}>
-        Sign in with Google
-      </button>
-      <SignInButton />
-    </div>
+    <form onSubmit={(e) => handleSignIn(e)}>
+      <input type="email" name="email" placeholder="Enter email address" />
+      <button>Sign in with SAML</button>
+    </form>
   );
 }
