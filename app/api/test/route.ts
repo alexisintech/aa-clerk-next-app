@@ -1,11 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from '@clerk/nextjs/server';
 
 export async function GET() {
-  const { getToken } = auth();
+  const response = await clerkClient.users.getUserList({ limit: 2 });
 
-  const template = 'test';
+  console.log(response);
 
-  const token = await getToken({ template })
-
-  return Response.json({ token })
+  return Response.json({ response });
 }
