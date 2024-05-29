@@ -1,41 +1,65 @@
-// Renders a list of memberships for an organization.
+'use client';
 
-"use client"
+import { useOrganization, useUser } from '@clerk/nextjs';
 
-import { useOrganization } from "@clerk/nextjs";
+export const OrgMembersParams = {
+  memberships: {
+    pageSize: 5,
+    keepPreviousData: true,
+  },
+};
 
-export default function MemberList() {
-  const { memberships } = useOrganization({
-    memberships: {
-      infinite: true,
-      keepPreviousData: true,
-    },
-  });
+// List of organization memberships. Administrators can
+// change member roles or remove members from the organization.
+export const OrganizationMemberships = () => {
+  const { user } = useUser();
+  const { isLoaded, memberships } = useOrganization(OrgMembersParams);
 
-  if (!memberships) {
-    // loading state
-    return null;
+  if (!isLoaded) {
+    return <>Loading</>;
   }
 
   return (
-    <div>
-      <h2 className="text-lg font-bold">Organization members</h2>
-      <ul>
-        {memberships.data?.map((membership) => (
-          <li key={membership.id}>
-            {membership.publicUserData.firstName} {membership.publicUserData.lastName} {membership.id} &lt;
-            {membership.publicUserData.identifier}&gt; :: {membership.role}
-          </li>
-        ))}
-      </ul>
+    <>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Joined</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          {memberships?.data?.map((mem) => (
+            <tr key={mem.id}>
+              <td>
+                {mem.publicUserData.identifier}{' '}
+                {mem.publicUserData.userId === user?.id && '(You)'}
+              </td>
+              <td>{mem.createdAt.toLocaleDateString()}</td>
+              <td>{mem.role}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <button
-        disabled={!memberships.hasNextPage}
-        onClick={memberships.fetchNext}
-        className="italic text-neutral-600"
-      >
-        Load more
-      </button>
-    </div>
+      <div className="flex">
+        <button
+          className="inline-block"
+          disabled={!memberships?.hasPreviousPage || memberships?.isFetching}
+          onClick={() => memberships?.fetchPrevious?.()}
+        >
+          Previous
+        </button>
+
+        <button
+          className="inline-block"
+          disabled={!memberships?.hasNextPage || memberships?.isFetching}
+          onClick={() => memberships?.fetchNext?.()}
+        >
+          Next
+        </button>
+      </div>
+    </>
   );
-}
+};
