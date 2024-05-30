@@ -1,9 +1,9 @@
 // Renders a list of invitations for the user to join organizations.
 
-'use client'
+'use client';
 
-import { useOrganizationList } from "@clerk/clerk-react";
-import React from "react";
+import { useOrganizationList } from '@clerk/clerk-react';
+import React from 'react';
 
 const UserInvitationsList = () => {
   const { isLoaded, userInvitations } = useOrganizationList({

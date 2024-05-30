@@ -23,6 +23,7 @@ export const ManageRoles = () => {
 
   return (
     <>
+      <h1>Manage roles</h1>
       <table>
         <thead>
           <tr>

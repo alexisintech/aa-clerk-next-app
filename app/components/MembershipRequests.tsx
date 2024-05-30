@@ -21,11 +21,12 @@ export const OrgMembershipRequests = () => {
 
   return (
     <>
+      <h1>Membership requests</h1>
       <table>
         <thead>
           <tr>
             <th>User</th>
-            <th>Requested Access</th>
+            <th>Date requested</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -34,15 +35,29 @@ export const OrgMembershipRequests = () => {
             <tr key={mem.id}>
               <td>{mem.publicUserData.identifier}</td>
               <td>{mem.createdAt.toLocaleDateString()}</td>
-              <td></td>
+              <td>
+                <button
+                  onClick={async () => {
+                    await mem.accept();
+                  }}
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={async () => {
+                    await mem.reject();
+                  }}
+                >
+                  Reject
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div className="flex">
+      <div>
         <button
-          className="inline-block"
           disabled={
             !membershipRequests?.hasPreviousPage ||
             membershipRequests?.isFetching
@@ -53,7 +68,6 @@ export const OrgMembershipRequests = () => {
         </button>
 
         <button
-          className="inline-block"
           disabled={
             !membershipRequests?.hasNextPage || membershipRequests?.isFetching
           }

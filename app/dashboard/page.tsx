@@ -1,12 +1,13 @@
 import { auth, clerkClient } from '@clerk/nextjs/server';
 import { OrgDetails, SessionDetails, UserDetails } from './details';
 import Link from 'next/link';
-import { OrganizationMemberships } from '../components/OrgMemberships';
+import { JoinedOrganizations } from '../components/UserMemberships';
 import UserInvitationsList from '../components/UserInvitationsList';
 import { CustomOrganizationSwitcher } from '../components/CustomOrgSwitcher';
 import { InvitationsList } from '../components/InvitationsList';
-import { ManageRoles } from '../components/MangeRoles';
+import { ManageRoles } from '../components/ManageRoles';
 import { UpdateOrganization } from '../components/UpdateOrg';
+import { OrgMembershipRequests } from '../components/MembershipRequests';
 
 export default async function DashboardPage() {
   const { userId } = auth();
@@ -46,10 +47,11 @@ export default async function DashboardPage() {
             <div className="mt-5 space-y-5 flex-column">
               <UserInvitationsList />
               <InvitationsList />
-              <OrganizationMemberships />
+              <JoinedOrganizations />
               <CustomOrganizationSwitcher />
               <ManageRoles />
               <UpdateOrganization />
+              <OrgMembershipRequests />
             </div>
           </>
         )}
