@@ -3,24 +3,24 @@ import {
   OrganizationSwitcher,
   SignedIn,
   UserButton,
-} from "@clerk/nextjs";
-import "./globals.css";
-import { Inter } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
-import Script from "next/script";
-import { Docs, Github, Times } from "./icons";
-import { Twitter } from "./icons";
-import { Discord } from "./icons";
-import { Metadata } from "next";
+} from '@clerk/nextjs';
+import './globals.css';
+import { Inter } from 'next/font/google';
+import Image from 'next/image';
+import Link from 'next/link';
+import Script from 'next/script';
+import { Docs, Github, Times } from './icons';
+import { Twitter } from './icons';
+import { Discord } from './icons';
+import { Metadata } from 'next';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Next.js Clerk Template",
+  title: 'Next.js Clerk Template',
   description:
-    "A simple and powerful Next.js template featuring authentication and user management powered by Clerk.",
-  openGraph: { images: ["/og.png"] },
+    'A simple and powerful Next.js template featuring authentication and user management powered by Clerk.',
+  openGraph: { images: ['/og.png'] },
 };
 
 export default function RootLayout({
@@ -32,18 +32,18 @@ export default function RootLayout({
     <html lang="en">
       <ClerkProvider
         appearance={{
-          variables: { colorPrimary: "#000000" },
+          variables: { colorPrimary: '#000000' },
           elements: {
             formButtonPrimary:
-              "bg-black border border-black border-solid hover:bg-white hover:text-black",
+              'bg-black border border-black border-solid hover:bg-white hover:text-black',
             socialButtonsBlockButton:
-              "bg-white border-gray-200 hover:bg-transparent hover:border-black text-gray-600 hover:text-black",
-            socialButtonsBlockButtonText: "font-semibold",
+              'bg-white border-gray-200 hover:bg-transparent hover:border-black text-gray-600 hover:text-black',
+            socialButtonsBlockButtonText: 'font-semibold',
             formButtonReset:
-              "bg-white border border-solid border-gray-200 hover:bg-transparent hover:border-black text-gray-500 hover:text-black",
+              'bg-white border border-solid border-gray-200 hover:bg-transparent hover:border-black text-gray-500 hover:text-black',
             membersPageInviteButton:
-              "bg-black border border-black border-solid hover:bg-white hover:text-black",
-            card: "bg-[#fafafa]",
+              'bg-black border border-black border-solid hover:bg-white hover:text-black',
+            card: 'bg-[#fafafa]',
           },
         }}
       >

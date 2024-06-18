@@ -1,11 +1,14 @@
-import { auth } from "@clerk/nextjs/server";
+import { clerkClient } from '@clerk/nextjs/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
-  const { getToken } = auth();
+export async function GET(req: NextRequest) {
+  const { isSignedIn, token } = await clerkClient.authenticateRequest(req);
 
-  const template = 'test';
+  if (!isSignedIn) {
+    return NextResponse.json({ status: 401 });
+  }
 
-  const token = await getToken({ template })
+  // Perform protected actions
 
-  return Response.json({ token })
+  return NextResponse.json({ message: token });
 }
