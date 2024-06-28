@@ -38,7 +38,7 @@ export default function Page() {
       emailAddress?.prepareVerification({ strategy: 'email_code' });
 
       // Set to true to display second form
-      // and capture the OTP code
+      // for capturing the OTP code
       setIsVerifying(true);
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
