@@ -85,10 +85,7 @@ const ManageAvailablePhoneNumbers = ({ user }: { user: UserResource }) => {
       <h2>Phone numbers that are not reserved for MFA</h2>
       {availalableForMfaPhones.length === 0 ? (
         <p>
-          None -{' '}
-          <Link href="/account/manage-mfa/phone/add">
-            Add a new phone number
-          </Link>
+          None - <Link href="/account/add-phone">Add a new phone number</Link>
         </p>
       ) : (
         <table>
@@ -139,7 +136,7 @@ const TotpDisabled = () => {
     <div>
       <p>
         Add TOTP via authentication app -{' '}
-        <Link href="/account/manage-mfa/add">
+        <Link href="/account/manage-mfa/add-totp">
           <button>Add</button>
         </Link>
       </p>
