@@ -103,45 +103,42 @@ function VerifyTotpScreen({
   );
 }
 
-// Generate and display backup codes
-function GenerateBackupCodes({
+function DisplayBackupCodes({ user }: { user: UserResource }) {
+  const [backupCode, setBackupCode] = React.useState<
+    BackupCodeResource | undefined
+  >(undefined);
+
+  React.useEffect(() => {
+    if (backupCode) {
+      return;
+    }
+
+    void user
+      .createBackupCode()
+      .then((backupCode: BackupCodeResource) => setBackupCode(backupCode))
+      .catch((err) => console.error(JSON.stringify(err, null, 2)));
+  }, []);
+
+  if (!backupCode) {
+    return <p>There was a problem generating backup codes</p>;
+  }
+
+  return (
+    <ol>
+      {backupCode.codes.map((code, index) => (
+        <li key={index}>{code}</li>
+      ))}
+    </ol>
+  );
+}
+
+function BackupCodeScreen({
   setStep,
   user,
 }: {
   setStep: React.Dispatch<React.SetStateAction<AddTotpSteps>>;
   user: UserResource;
 }) {
-  const [backupCodes, setBackupCodes] = React.useState<
-    BackupCodeResource | undefined
-  >(undefined);
-
-  const [loading, setLoading] = React.useState(false);
-
-  React.useEffect(() => {
-    if (backupCodes) return;
-
-    setLoading(true);
-
-    void user
-      .createBackupCode()
-      .then((backupCode: BackupCodeResource) => {
-        setBackupCodes(backupCode);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(JSON.stringify(err, null, 2));
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!backupCodes) {
-    return <p>There was a problem generating backup codes</p>;
-  }
-
   return (
     <>
       <h1>Backup codes</h1>
@@ -150,10 +147,7 @@ function GenerateBackupCodes({
           Save this list of backup codes somewhere safe in case you need to
           access your account in an emergency
         </p>
-        <ol>
-          {!loading &&
-            backupCodes.codes.map((code, index) => <li key={index}>{code}</li>)}
-        </ol>
+        <DisplayBackupCodes user={user} />
         <button onClick={() => setStep('success')}>Finish</button>
       </div>
     </>
@@ -171,13 +165,13 @@ function SuccessScreen() {
   );
 }
 
-export default function AddTOTP() {
+export default function AddMFaScreen() {
   const [step, setStep] = React.useState<AddTotpSteps>('add');
   const { isLoaded, user } = useUser();
 
   if (!isLoaded) return null;
 
-  if (isLoaded && !user?.id) {
+  if (isLoaded && !user) {
     return <p>You must be logged in to access this page</p>;
   }
 
@@ -186,7 +180,7 @@ export default function AddTOTP() {
       {step === 'add' && <AddTotpScreen user={user} setStep={setStep} />}
       {step === 'verify' && <VerifyTotpScreen user={user} setStep={setStep} />}
       {step === 'backupcodes' && (
-        <GenerateBackupCodes user={user} setStep={setStep} />
+        <BackupCodeScreen user={user} setStep={setStep} />
       )}
       {step === 'success' && <SuccessScreen />}
       <Link href="/account/manage-mfa">Manage MFA</Link>

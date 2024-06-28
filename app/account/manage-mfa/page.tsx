@@ -3,116 +3,7 @@
 import * as React from 'react';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
-import {
-  BackupCodeResource,
-  PhoneNumberResource,
-  UserResource,
-} from '@clerk/types';
-
-// Display phone numbers reserved for MFA
-const ManageMfaPhoneNumbers = ({ user }: { user: UserResource }) => {
-  // Check if any phone numbers are reserved for MFA
-  const mfaPhones = user.phoneNumbers
-    .filter((ph) => ph.verification.status === 'verified')
-    .filter((ph) => ph.reservedForSecondFactor)
-    .sort((ph: PhoneNumberResource) => (ph.defaultSecondFactor ? -1 : 1));
-
-  return (
-    <>
-      <h2>Phone numbers reserved for MFA</h2>
-      {mfaPhones.length === 0 && <p>No phone numbers reserved for MFA</p>}
-      <table>
-        <tr>
-          <th>Phone number</th>
-          <th>Actions</th>
-        </tr>
-        {mfaPhones.map((phone) => {
-          return (
-            <tr key={phone.id}>
-              <td>
-                {phone.phoneNumber} {phone.defaultSecondFactor && '(Default)'}
-              </td>
-              <td>
-                <div>
-                  <button
-                    onClick={() =>
-                      phone.setReservedForSecondFactor({ reserved: false })
-                    }
-                  >
-                    Disable for MFA
-                  </button>
-                </div>
-
-                {!phone.defaultSecondFactor && (
-                  <div>
-                    <button onClick={() => phone.makeDefaultSecondFactor()}>
-                      Make default
-                    </button>
-                  </div>
-                )}
-
-                <div>
-                  <button onClick={() => phone.destroy()}>
-                    Remove from account
-                  </button>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
-      </table>
-    </>
-  );
-};
-
-// Display phone numbers that are not reserved for MFA
-const ManageAvailablePhoneNumbers = ({ user }: { user: UserResource }) => {
-  // Check if any phone numbers aren't reserved for MFA
-  const availalableForMfaPhones = user.phoneNumbers
-    .filter((ph) => ph.verification.status === 'verified')
-    .filter((ph) => !ph.reservedForSecondFactor);
-
-  // Reserve a phone number for MFA
-  const reservePhoneForMfa = async (phone: PhoneNumberResource) => {
-    // Set the phone number as reserved for MFA
-    await phone.setReservedForSecondFactor({ reserved: true });
-    // Refresh the user information to reflect changes
-    await user.reload();
-  };
-
-  return (
-    <>
-      <h2>Phone numbers that are not reserved for MFA</h2>
-      {availalableForMfaPhones.length === 0 ? (
-        <p>
-          None - <Link href="/account/add-phone">Add a new phone number</Link>
-        </p>
-      ) : (
-        <table>
-          <tr>
-            <th>Phone number</th>
-            <th>Actions</th>
-          </tr>
-          {availalableForMfaPhones.map((phone) => {
-            return (
-              <tr key={phone.id}>
-                <td>{phone.phoneNumber}</td>
-                <td>
-                  <button onClick={() => reservePhoneForMfa(phone)}>
-                    Use for MFA
-                  </button>
-                  <button onClick={() => phone.destroy()}>
-                    Remove from account
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
-        </table>
-      )}
-    </>
-  );
-};
+import { BackupCodeResource, UserResource } from '@clerk/types';
 
 // If TOTP is enabled, provide the option to disable it
 const TotpEnabled = ({ user }: { user: UserResource }) => {
@@ -136,7 +27,7 @@ const TotpDisabled = () => {
     <div>
       <p>
         Add TOTP via authentication app -{' '}
-        <Link href="/account/manage-mfa/add-totp">
+        <Link href="/account/manage-mfa/add">
           <button>Add</button>
         </Link>
       </p>
@@ -145,8 +36,7 @@ const TotpDisabled = () => {
 };
 
 // Generate and display backup codes
-function GenerateBackupCodes() {
-  const { user } = useUser();
+function GenerateBackupCodes({ user }: { user: UserResource }) {
   const [backupCodes, setBackupCodes] = React.useState<
     BackupCodeResource | undefined
   >(undefined);
@@ -160,7 +50,7 @@ function GenerateBackupCodes() {
 
     setLoading(true);
     void user
-      ?.createBackupCode()
+      .createBackupCode()
       .then((backupCode: BackupCodeResource) => {
         setBackupCodes(backupCode);
         setLoading(false);
@@ -183,8 +73,9 @@ function GenerateBackupCodes() {
 
   return (
     <ol>
-      {!loading &&
-        backupCodes.codes.map((code, index) => <li key={index}>{code}</li>)}
+      {backupCodes.codes.map((code, index) => (
+        <li key={index}>{code}</li>
+      ))}
     </ol>
   );
 }
@@ -203,10 +94,6 @@ export default function ManageMFA() {
     <>
       <h1>User MFA Settings</h1>
 
-      {/* Manage SMS MFA */}
-      <ManageMfaPhoneNumbers user={user} />
-      <ManageAvailablePhoneNumbers user={user} />
-
       {/* Manage TOTP MFA */}
       {user.totpEnabled ? <TotpEnabled user={user} /> : <TotpDisabled />}
 
@@ -221,7 +108,7 @@ export default function ManageMFA() {
       )}
       {showNewCodes && (
         <>
-          <GenerateBackupCodes />
+          <GenerateBackupCodes user={user} />
           <button onClick={() => setShowNewCodes(false)}>Done</button>
         </>
       )}
