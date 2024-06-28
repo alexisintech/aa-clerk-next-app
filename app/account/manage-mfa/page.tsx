@@ -6,9 +6,11 @@ import Link from 'next/link';
 import { BackupCodeResource, UserResource } from '@clerk/types';
 
 // If TOTP is enabled, provide the option to disable it
-const TotpEnabled = ({ user }: { user: UserResource }) => {
+const TotpEnabled = () => {
+  const { user } = useUser();
+
   const disableTOTP = async () => {
-    await user.disableTOTP();
+    await user?.disableTOTP();
   };
 
   return (
@@ -36,7 +38,8 @@ const TotpDisabled = () => {
 };
 
 // Generate and display backup codes
-function GenerateBackupCodes({ user }: { user: UserResource }) {
+function GenerateBackupCodes() {
+  const { user } = useUser();
   const [backupCodes, setBackupCodes] = React.useState<
     BackupCodeResource | undefined
   >(undefined);
@@ -50,7 +53,7 @@ function GenerateBackupCodes({ user }: { user: UserResource }) {
 
     setLoading(true);
     void user
-      .createBackupCode()
+      ?.createBackupCode()
       .then((backupCode: BackupCodeResource) => {
         setBackupCodes(backupCode);
         setLoading(false);
@@ -95,7 +98,7 @@ export default function ManageMFA() {
       <h1>User MFA Settings</h1>
 
       {/* Manage TOTP MFA */}
-      {user.totpEnabled ? <TotpEnabled user={user} /> : <TotpDisabled />}
+      {user.totpEnabled ? <TotpEnabled /> : <TotpDisabled />}
 
       {/* Manage backup codes */}
       {user.backupCodeEnabled && (
@@ -108,7 +111,7 @@ export default function ManageMFA() {
       )}
       {showNewCodes && (
         <>
-          <GenerateBackupCodes user={user} />
+          <GenerateBackupCodes />
           <button onClick={() => setShowNewCodes(false)}>Done</button>
         </>
       )}

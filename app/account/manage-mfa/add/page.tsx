@@ -12,17 +12,16 @@ type DisplayFormat = 'qr' | 'uri';
 
 function AddTotpScreen({
   setStep,
-  user,
 }: {
   setStep: React.Dispatch<React.SetStateAction<AddTotpSteps>>;
-  user: UserResource;
 }) {
+  const { user } = useUser();
   const [totp, setTOTP] = React.useState<TOTPResource | undefined>(undefined);
   const [displayFormat, setDisplayFormat] = React.useState<DisplayFormat>('qr');
 
   React.useEffect(() => {
     void user
-      .createTOTP()
+      ?.createTOTP()
       .then((totp: TOTPResource) => {
         setTOTP(totp);
       })
@@ -67,17 +66,16 @@ function AddTotpScreen({
 
 function VerifyTotpScreen({
   setStep,
-  user,
 }: {
   setStep: React.Dispatch<React.SetStateAction<AddTotpSteps>>;
-  user: UserResource;
 }) {
+  const { user } = useUser();
   const [code, setCode] = React.useState('');
 
   const verifyTotp = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await user.verifyTOTP({ code });
+      await user?.verifyTOTP({ code });
       setStep('backupcodes');
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
@@ -103,7 +101,8 @@ function VerifyTotpScreen({
   );
 }
 
-function DisplayBackupCodes({ user }: { user: UserResource }) {
+function DisplayBackupCodes() {
+  const { user } = useUser();
   const [backupCode, setBackupCode] = React.useState<
     BackupCodeResource | undefined
   >(undefined);
@@ -114,7 +113,7 @@ function DisplayBackupCodes({ user }: { user: UserResource }) {
     }
 
     void user
-      .createBackupCode()
+      ?.createBackupCode()
       .then((backupCode: BackupCodeResource) => setBackupCode(backupCode))
       .catch((err) => console.error(JSON.stringify(err, null, 2)));
   }, []);
@@ -134,10 +133,8 @@ function DisplayBackupCodes({ user }: { user: UserResource }) {
 
 function BackupCodeScreen({
   setStep,
-  user,
 }: {
   setStep: React.Dispatch<React.SetStateAction<AddTotpSteps>>;
-  user: UserResource;
 }) {
   return (
     <>
@@ -147,7 +144,7 @@ function BackupCodeScreen({
           Save this list of backup codes somewhere safe in case you need to
           access your account in an emergency
         </p>
-        <DisplayBackupCodes user={user} />
+        <DisplayBackupCodes />
         <button onClick={() => setStep('success')}>Finish</button>
       </div>
     </>
@@ -177,11 +174,9 @@ export default function AddMFaScreen() {
 
   return (
     <>
-      {step === 'add' && <AddTotpScreen user={user} setStep={setStep} />}
-      {step === 'verify' && <VerifyTotpScreen user={user} setStep={setStep} />}
-      {step === 'backupcodes' && (
-        <BackupCodeScreen user={user} setStep={setStep} />
-      )}
+      {step === 'add' && <AddTotpScreen setStep={setStep} />}
+      {step === 'verify' && <VerifyTotpScreen setStep={setStep} />}
+      {step === 'backupcodes' && <BackupCodeScreen setStep={setStep} />}
       {step === 'success' && <SuccessScreen />}
       <Link href="/account/manage-mfa">Manage MFA</Link>
     </>
