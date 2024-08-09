@@ -38,14 +38,15 @@ const getFirestoreData = async () => {
 export default function FirebaseUI() {
   const { getToken, userId } = useAuth();
 
+  // Handle if the user is not signed in
+  // You could display content, or redirect them to a sign-in page
   if (!userId) {
-    console.log('User needs to sign in with Clerk');
+    return <p>You need to sign in with Clerk to access this page.</p>;
   }
 
-  const signInWithClerk = async () => {
-    console.log('Sign in with clerk');
+  const signIntoFirebaseWithClerk = async () => {
     const token = await getToken({ template: 'integration_firebase' });
-    console.log(token);
+
     const userCredentials = await signInWithCustomToken(auth, token || '');
     // The userCredentials.user object can call the methods of
     // the Firebase platform as an authenticated user.
@@ -54,7 +55,9 @@ export default function FirebaseUI() {
 
   return (
     <main style={{ display: 'flex', flexDirection: 'column', rowGap: '1rem' }}>
-      <button onClick={signInWithClerk}>Sign in to Firebase</button>
+      <button onClick={signIntoFirebaseWithClerk}>Sign in</button>
+
+      {/* Remove this button if you do not have Firestore set up */}
       <button onClick={getFirestoreData}>Get document</button>
     </main>
   );
