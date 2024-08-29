@@ -14,18 +14,16 @@ function AddTaskForm() {
   }
 
   return (
-    <form action={onSubmit} className="flex gap-2">
+    <form action={onSubmit}>
       <input
         autoFocus
         type="text"
         name="name"
+        placeholder="Enter new task"
         onChange={(e) => setTaskName(e.target.value)}
         value={taskName}
-        placeholder="What do you need to do?"
       />
-      <button type="submit" className="disabled:cursor-not-allowed">
-        Add
-      </button>
+      <button type="submit">Add</button>
     </form>
   );
 }
