@@ -1,7 +1,5 @@
-import { OrganizationProfile } from "@clerk/nextjs";
+import { OrganizationProfile } from '@clerk/nextjs';
 
 export default function OrganizationProfilePage() {
-  return (
-    <OrganizationProfile path="/organization-profile" />
-  )
+  return <OrganizationProfile />;
 }
