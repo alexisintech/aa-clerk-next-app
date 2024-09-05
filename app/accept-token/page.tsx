@@ -12,7 +12,7 @@ export default function Page() {
   const signInToken = useSearchParams().get('token');
 
   useEffect(() => {
-    if (!signIn || !setActive || !signInToken) {
+    if (!signIn || !setActive || !signInToken || user) {
       return;
     }
 
