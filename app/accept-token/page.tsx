@@ -12,11 +12,12 @@ export default function Page() {
   const signInToken = useSearchParams().get('token');
 
   useEffect(() => {
-    if (!signIn || !setActive || !signInToken || user) {
+    if (!signIn || !setActive || !signInToken || user || loading) {
       return;
     }
 
     const createSignIn = async () => {
+      setLoading(true);
       try {
         // Create the `SignIn` with the token
         const signInAttempt = await signIn.create({
@@ -28,7 +29,6 @@ export default function Page() {
         if (signInAttempt.status === 'complete') {
           setActive({
             session: signInAttempt.createdSessionId,
-            beforeEmit: () => setLoading(true),
           });
         } else {
           // If the sign-in attempt is not complete, check why.
@@ -39,23 +39,24 @@ export default function Page() {
         // See https://clerk.com/docs/custom-flows/error-handling
         // for more info on error handling
         console.error('Error:', JSON.stringify(err, null, 2));
-        setLoading(true);
+      } finally {
+        setLoading(false);
       }
     };
 
     createSignIn();
-  }, [signIn, setActive]);
+  }, [signIn, setActive, signInToken, user, loading]);
 
   if (!signInToken) {
     return <div>No token provided.</div>;
   }
 
-  if (!loading) {
-    return <div>Loading...</div>;
-  }
-
   if (!user) {
     return;
+  }
+
+  if (loading) {
+    return <div>Signing you in...</div>;
   }
 
   return <div>Signed in as {user.id}</div>;

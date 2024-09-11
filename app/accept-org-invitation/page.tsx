@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { useOrganization, useSignIn, useSignUp, useUser } from '@clerk/nextjs';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useOrganization, useSignIn, useSignUp } from '@clerk/nextjs';
+import { useSearchParams } from 'next/navigation';
 
 export default function Page() {
   const { isLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
@@ -11,8 +11,6 @@ export default function Page() {
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
 
   // Get the token and account status from the query params
   const token = useSearchParams().get('__clerk_ticket');
@@ -23,14 +21,22 @@ export default function Page() {
     return <p>No invitation token found.</p>;
   }
 
+  // Handle sign-in
   React.useEffect(() => {
-    if (!signIn || !setActiveSignIn || !token || organization) {
+    if (
+      !signIn ||
+      !setActiveSignIn ||
+      !token ||
+      organization ||
+      accountStatus !== 'sign_in'
+    ) {
       return;
     }
 
     const createSignIn = async () => {
       try {
-        // Create the `SignIn` with the token
+        // Create a new `SignIn` with the supplied invitation token.
+        // Make sure you're also passing the ticket strategy.
         const signInAttempt = await signIn.create({
           strategy: 'ticket',
           ticket: token as string,
@@ -46,10 +52,10 @@ export default function Page() {
           // User may need to complete further steps.
           console.error(JSON.stringify(signInAttempt, null, 2));
         }
-      } catch (err: any) {
+      } catch (err) {
+        // See https://clerk.com/docs/custom-flows/error-handling
+        // for more info on error handling
         console.error('Error:', JSON.stringify(err, null, 2));
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -59,16 +65,14 @@ export default function Page() {
   // Handle submission of the sign-up form
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!isLoaded) return;
 
-    setLoading(true);
-    setError(null);
     try {
-      if (!token) {
-        setError('No invitation token found.');
-        return;
-      }
-
+      // Create a new sign-up with the supplied invitation token.
+      // Make sure you're also passing the ticket strategy.
+      // After the below call, the user's email address will be
+      // automatically verified because of the invitation token.
       const signUpAttempt = await signUp.create({
         strategy: 'ticket',
         ticket: token,
@@ -77,27 +81,20 @@ export default function Page() {
         password,
       });
 
+      // If the sign-up was successful, set the session to active
       if (signUpAttempt.status === 'complete') {
         await setActiveSignUp({ session: signUpAttempt.createdSessionId });
       } else {
-        setError('Sign-up attempt incomplete. Please try again.');
+        // If the sign-in attempt is not complete, check why.
+        // User may need to complete further steps.
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err) {
-      setError('An error occurred during sign-up. Please try again.');
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
       console.error(JSON.stringify(err, null, 2));
-    } finally {
-      setLoading(false);
     }
   };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
 
   if (accountStatus === 'sign_in' && !organization) {
     return <div>Signing you in...</div>;
@@ -139,9 +136,7 @@ export default function Page() {
             />
           </div>
           <div>
-            <button type="submit" disabled={loading}>
-              {loading ? 'Signing up...' : 'Next'}
-            </button>
+            <button type="submit">Next</button>
           </div>
         </form>
       </>
