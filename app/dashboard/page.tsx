@@ -8,6 +8,9 @@ import { InvitationsList } from '../components/InvitationsList';
 import { ManageRoles } from '../components/ManageRoles';
 import { UpdateOrganization } from '../components/UpdateOrg';
 import { OrgMembershipRequests } from '../components/MembershipRequests';
+import { CreatePasskeyButton } from '../components/CustomCreatePasskeysButton';
+import { RenamePasskeyUI } from '../components/RenamePasskey';
+import { DeletePasskeyUI } from '../components/DeletePasskeyUI';
 
 export default async function DashboardPage() {
   const { userId } = auth();
@@ -52,6 +55,9 @@ export default async function DashboardPage() {
               <ManageRoles />
               <UpdateOrganization />
               <OrgMembershipRequests />
+              <CreatePasskeyButton />
+              <RenamePasskeyUI />
+              <DeletePasskeyUI />
             </div>
           </>
         )}
