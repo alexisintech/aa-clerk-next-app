@@ -41,11 +41,13 @@ export default function Page() {
           phoneNumberId,
         });
 
-        // Set verifying to true to display second form and capture the OTP code
+        // Set verifying to true to display second form
+        // and capture the OTP code
         setVerifying(true);
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
       console.error('Error:', JSON.stringify(err, null, 2));
     }
   }
@@ -57,26 +59,25 @@ export default function Page() {
 
     try {
       // Use the code provided by the user and attempt verification
-      const completeSignIn = await signIn.attemptFirstFactor({
+      const signInAttempt = await signIn.attemptFirstFactor({
         strategy: 'phone_code',
         code,
       });
 
-      // This mainly for debugging while developing.
-      // Once your instance is setup, this should not be required.
-      if (completeSignIn.status !== 'complete') {
-        console.error(JSON.stringify(completeSignIn, null, 2));
-      }
-
       // If verification was completed, set the session to active
       // and redirect the user
-      if (completeSignIn.status === 'complete') {
-        await setActive({ session: completeSignIn.createdSessionId });
+      if (signInAttempt.status === 'complete') {
+        await setActive({ session: signInAttempt.createdSessionId });
 
         router.push('/');
+      } else {
+        // If the status is not complete, check why. User may need to
+        // complete further steps.
+        console.error(signInAttempt);
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
       console.error('Error:', JSON.stringify(err, null, 2));
     }
   }

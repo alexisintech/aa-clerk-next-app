@@ -9,12 +9,10 @@ export default function Page() {
   const [verifying, setVerifying] = React.useState(false);
   const [phone, setPhone] = React.useState('');
   const [code, setCode] = React.useState('');
-  const [error, setError] = React.useState('');
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
 
     if (!isLoaded && !signUp) return null;
 
@@ -31,41 +29,38 @@ export default function Page() {
       // Set verifying to true to display second form and capture the OTP code
       setVerifying(true);
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
       console.error('Error:', JSON.stringify(err, null, 2));
-      setError(JSON.stringify(err, null, 2));
     }
   }
 
   async function handleVerification(e: React.FormEvent) {
     e.preventDefault();
-    setError('');
 
     if (!isLoaded && !signUp) return null;
 
     try {
       // Use the code provided by the user and attempt verification
-      const completeSignUp = await signUp.attemptPhoneNumberVerification({
+      const signInAttempt = await signUp.attemptPhoneNumberVerification({
         code,
       });
 
-      // This is mainly for debugging while developing.
-      // Once your Instance is setup this should not be required.
-      if (completeSignUp.status !== 'complete') {
-        console.error(JSON.stringify(completeSignUp, null, 2));
-      }
-
       // If verification was completed, set the session to active
       // and redirect the user
-      if (completeSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
+      if (signInAttempt.status === 'complete') {
+        await setActive({ session: signInAttempt.createdSessionId });
 
         router.push('/');
+      } else {
+        // If the status is not complete, check why. User may need to
+        // complete further steps.
+        console.error(signInAttempt);
       }
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling for more on error handling
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
       console.error('Error:', JSON.stringify(err, null, 2));
-      setError(JSON.stringify(err, null, 2));
     }
   }
 
@@ -83,7 +78,6 @@ export default function Page() {
           />
           <button type="submit">Verify</button>
         </form>
-        <p>{error}</p>
       </>
     );
   }
@@ -102,7 +96,6 @@ export default function Page() {
         />
         <button type="submit">Continue</button>
       </form>
-      <p>{error}</p>
     </>
   );
 }
