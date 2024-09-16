@@ -3,23 +3,16 @@
 import * as React from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
-import { ClerkAPIError } from '@clerk/types';
-import { isClerkAPIResponseError } from '@clerk/nextjs/errors';
 
 export default function SignInForm() {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [errors, setErrors] = React.useState<ClerkAPIError[]>();
-
   const router = useRouter();
 
   // Handle the submission of the sign-in form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // clear any errors that may have occured during previous form submission
-    setErrors(undefined);
 
     if (!isLoaded) {
       return;
@@ -27,24 +20,24 @@ export default function SignInForm() {
 
     // Start the sign-in process using the email and password provided
     try {
-      const completeSignIn = await signIn.create({
+      const signInAttempt = await signIn.create({
         identifier: email,
         password,
       });
 
-      // This is mainly for debugging while developing.
-      if (completeSignIn.status !== 'complete') {
-        console.log(JSON.stringify(completeSignIn, null, 2));
-      }
-
       // If sign-in process is complete, set the created session as active
       // and redirect the user
-      if (completeSignIn.status === 'complete') {
-        await setActive({ session: completeSignIn.createdSessionId });
+      if (signInAttempt.status === 'complete') {
+        await setActive({ session: signInAttempt.createdSessionId });
         router.push('/');
+      } else {
+        // If the status is not complete, check why. User may need to
+        // complete further steps.
+        console.error(JSON.stringify(signInAttempt, null, 2));
       }
-    } catch (err) {
-      if (isClerkAPIResponseError(err)) setErrors(err.errors);
+    } catch (err: any) {
+      // See https://clerk.com/docs/custom-flows/error-handling
+      // for more info on error handling
       console.error(JSON.stringify(err, null, 2));
     }
   };
@@ -74,16 +67,8 @@ export default function SignInForm() {
             value={password}
           />
         </div>
-        <button type="submit">Sign in</button>
+        <button type="submit">Continue</button>
       </form>
-
-      {errors && (
-        <ul>
-          {errors.map((el, index) => (
-            <li key={index}>{el.longMessage}</li>
-          ))}
-        </ul>
-      )}
     </>
   );
 }

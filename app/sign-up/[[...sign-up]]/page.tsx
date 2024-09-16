@@ -48,19 +48,19 @@ export default function Page() {
 
     try {
       // Use the code the user provided to attempt verification
-      const completeSignUp = await signUp.attemptEmailAddressVerification({
+      const signUpAttempt = await signUp.attemptEmailAddressVerification({
         code,
       });
 
       // If verification was completed, set the session to active
       // and redirect the user
-      if (completeSignUp.status === 'complete') {
-        await setActive({ session: completeSignUp.createdSessionId });
+      if (signUpAttempt.status === 'complete') {
+        await setActive({ session: signUpAttempt.createdSessionId });
         router.push('/');
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
-        console.error(JSON.stringify(completeSignUp, null, 2));
+        console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err: any) {
       // See https://clerk.com/docs/custom-flows/error-handling
@@ -114,7 +114,7 @@ export default function Page() {
           />
         </div>
         <div>
-          <button type="submit">Next</button>
+          <button type="submit">Continue</button>
         </div>
       </form>
     </>
