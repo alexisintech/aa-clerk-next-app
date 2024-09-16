@@ -25,7 +25,7 @@ export default function SignInForm() {
 
     if (!isLoaded) return;
 
-    // Start the sign-in process
+    // Start the sign-in process using the email and password provided
     try {
       await signIn.create({
         identifier: email,
@@ -33,26 +33,25 @@ export default function SignInForm() {
       });
 
       // Attempt the TOTP or backup code verification
-      const result = await signIn.attemptSecondFactor({
+      const signInAttempt = await signIn.attemptSecondFactor({
         strategy: useBackupCode ? 'backup_code' : 'totp',
         code: code,
       });
 
       // If verification was completed, set the session to active
       // and redirect the user
-      if (result.status === 'complete') {
-        await setActive({ session: result.createdSessionId });
-
+      if (signInAttempt.status === 'complete') {
+        await setActive({ session: signInAttempt.createdSessionId });
         router.push('/');
       } else {
         // If the status is not complete, check why. User may need to
         // complete further steps.
-        console.log(result);
+        console.log(signInAttempt);
       }
     } catch (err) {
       // See https://clerk.com/docs/custom-flows/error-handling
       // for more info on error handling
-      console.error(err);
+      console.error('Error:', JSON.stringify(err, null, 2));
     }
   };
 
@@ -111,7 +110,7 @@ export default function SignInForm() {
             value={password}
           />
         </div>
-        <button type="submit">Next</button>
+        <button type="submit">Continue</button>
       </form>
     </>
   );
