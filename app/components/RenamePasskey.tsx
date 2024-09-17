@@ -6,6 +6,9 @@ import { useRef, useState } from 'react';
 
 export function RenamePasskeyUI() {
   const { user } = useUser();
+
+  if (!user) return null;
+
   const passkeyToUpdateId = useRef<HTMLInputElement>(null);
   const newPasskeyName = useRef<HTMLInputElement>(null);
   const { passkeys } = user;

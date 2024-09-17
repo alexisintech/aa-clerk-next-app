@@ -5,6 +5,9 @@ import { useRef, useState } from 'react';
 
 export function DeletePasskeyUI() {
   const { user } = useUser();
+
+  if (!user) return null;
+
   const passkeyToDeleteId = useRef<HTMLInputElement>(null);
   const { passkeys } = user;
   const [success, setSuccess] = useState(false);
