@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import React, { useState } from 'react';
 import { useAuth, useSignIn } from '@clerk/nextjs';
 import type { NextPage } from 'next';
@@ -34,18 +34,18 @@ const ForgotPasswordPage: NextPage = () => {
         strategy: 'reset_password_email_code',
         identifier: email,
       })
-      .then(_ => {
+      .then((_) => {
         setSuccessfulCreation(true);
         setError('');
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('error', err.errors[0].longMessage);
         setError(err.errors[0].longMessage);
       });
   }
 
-  // Reset the user's password. 
-  // Upon successful reset, the user will be 
+  // Reset the user's password.
+  // Upon successful reset, the user will be
   // signed in and redirected to the home page
   async function reset(e: React.FormEvent) {
     e.preventDefault();
@@ -55,49 +55,38 @@ const ForgotPasswordPage: NextPage = () => {
         code,
         password,
       })
-      .then(result => {
+      .then((result) => {
+        // Check if 2FA is required
         if (result.status === 'needs_second_factor') {
           setSecondFactor(true);
           setError('');
         } else if (result.status === 'complete') {
-          // Set the active session to 
-          // the newly created session (user is now logged in)
+          // Set the active session to
+          // the newly created session (user is now signed in)
           setActive({ session: result.createdSessionId });
           setError('');
         } else {
           console.log(result);
         }
       })
-      .catch(err => {
-        console.error('error', err.errors[0].longMessage)
+      .catch((err) => {
+        console.error('error', err.errors[0].longMessage);
         setError(err.errors[0].longMessage);
       });
   }
 
   return (
-    <div
-      style={{
-        margin: 'auto',
-        maxWidth: '500px',
-      }}
-    >
+    <div>
       <h1>Forgot Password?</h1>
-      <form
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '1em',
-        }}
-        onSubmit={!successfulCreation ? create : reset}
-      >
+      <form onSubmit={!successfulCreation ? create : reset}>
         {!successfulCreation && (
           <>
-            <label htmlFor='email'>Please provide your email address</label>
+            <label htmlFor="email">Please provide your email address</label>
             <input
-              type='email'
-              placeholder='e.g john@doe.com'
+              type="email"
+              placeholder="e.g john@doe.com"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <button>Send password reset code</button>
@@ -107,18 +96,20 @@ const ForgotPasswordPage: NextPage = () => {
 
         {successfulCreation && (
           <>
-            <label htmlFor='password'>Enter your new password</label>
+            <label htmlFor="password">Enter your new password</label>
             <input
-              type='password'
+              type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
-            <label htmlFor='password'>Enter the password reset code that was sent to your email</label>
+            <label htmlFor="password">
+              Enter the password reset code that was sent to your email
+            </label>
             <input
-              type='text'
+              type="text"
               value={code}
-              onChange={e => setCode(e.target.value)}
+              onChange={(e) => setCode(e.target.value)}
             />
 
             <button>Reset</button>
@@ -126,7 +117,9 @@ const ForgotPasswordPage: NextPage = () => {
           </>
         )}
 
-        {secondFactor && <p>2FA is required, this UI does not handle that</p>}
+        {secondFactor && (
+          <p>2FA is required, but this UI does not handle that</p>
+        )}
       </form>
     </div>
   );
