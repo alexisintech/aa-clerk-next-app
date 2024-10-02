@@ -1,37 +1,34 @@
-"use client"
+'use client';
 
-import { useState, useEffect, ChangeEventHandler, useRef } from "react"
-import { useOrganization, useUser } from "@clerk/nextjs"
-import type { OrganizationCustomRoleKey } from "@clerk/types"
+import { useState, useEffect, ChangeEventHandler, useRef } from 'react';
+import { useOrganization, useUser } from '@clerk/nextjs';
+import type { OrganizationCustomRoleKey } from '@clerk/types';
 
 export const OrgMembersParams = {
   memberships: {
     pageSize: 5,
     keepPreviousData: true,
   },
-}
+};
 
 export const OrgInvitationsParams = {
   invitations: {
     pageSize: 5,
     keepPreviousData: true,
   },
-}
+};
 export const OrgMembershipRequestsParams = {
   membershipRequests: {
     pageSize: 5,
     keepPreviousData: true,
   },
-}
+};
 
 // View and manage active organization members,
 // along with any pending invitations.
 // Invite new members.
 export default function Organization() {
-  const {
-    organization: currentOrganization,
-    isLoaded,
-  } = useOrganization();
+  const { organization: currentOrganization, isLoaded } = useOrganization();
 
   if (!isLoaded || !currentOrganization) {
     return null;
@@ -55,11 +52,11 @@ export default function Organization() {
 // List of organization memberships. Administrators can
 // change member roles or remove members from the organization.
 export const OrgMembers = () => {
-  const { user } = useUser()
-  const { isLoaded, memberships } = useOrganization(OrgMembersParams)
+  const { user } = useUser();
+  const { isLoaded, memberships } = useOrganization(OrgMembersParams);
 
   if (!isLoaded) {
-    return <>Loading</>
+    return <>Loading</>;
   }
 
   return (
@@ -77,8 +74,8 @@ export const OrgMembers = () => {
           {memberships?.data?.map((mem) => (
             <tr key={mem.id}>
               <td>
-                {mem.publicUserData.identifier}{" "}
-                {mem.publicUserData.userId === user?.id && "(You)"}
+                {mem.publicUserData.identifier}{' '}
+                {mem.publicUserData.userId === user?.id && '(You)'}
               </td>
               <td>{mem.createdAt.toLocaleDateString()}</td>
               <td>
@@ -87,16 +84,16 @@ export const OrgMembers = () => {
                   onChange={async (e) => {
                     await mem.update({
                       role: e.target.value as OrganizationCustomRoleKey,
-                    })
-                    await memberships?.revalidate()
+                    });
+                    await memberships?.revalidate();
                   }}
                 />
               </td>
               <td>
                 <button
                   onClick={async () => {
-                    await mem.destroy()
-                    await memberships?.revalidate()
+                    await mem.destroy();
+                    await memberships?.revalidate();
                   }}
                 >
                   Remove
@@ -125,8 +122,8 @@ export const OrgMembers = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
 // List of pending invitations to an organization.
 // You can invite new organization members and
@@ -135,10 +132,10 @@ export const OrgInvitations = () => {
   const { isLoaded, invitations, memberships } = useOrganization({
     ...OrgInvitationsParams,
     ...OrgMembersParams,
-  })
+  });
 
   if (!isLoaded) {
-    return <>Loading</>
+    return <>Loading</>;
   }
 
   return (
@@ -161,11 +158,11 @@ export const OrgInvitations = () => {
               <td>
                 <button
                   onClick={async () => {
-                    await inv.revoke()
+                    await inv.revoke();
                     await Promise.all([
                       memberships?.revalidate,
                       invitations?.revalidate,
-                    ])
+                    ]);
                   }}
                 >
                   Revoke
@@ -194,16 +191,16 @@ export const OrgInvitations = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
 export const OrgMembershipRequests = () => {
   const { isLoaded, membershipRequests } = useOrganization(
     OrgMembershipRequestsParams
-  )
+  );
 
   if (!isLoaded) {
-    return <>Loading</>
+    return <>Loading</>;
   }
 
   return (
@@ -250,41 +247,42 @@ export const OrgMembershipRequests = () => {
         </button>
       </div>
     </>
-  )
-}
+  );
+};
 
 export const OrgInviteMemberForm = () => {
-  const { isLoaded, organization, invitations } = useOrganization(OrgInvitationsParams)
-  const [emailAddress, setEmailAddress] = useState("")
-  const [disabled, setDisabled] = useState(false)
+  const { isLoaded, organization, invitations } =
+    useOrganization(OrgInvitationsParams);
+  const [emailAddress, setEmailAddress] = useState('');
+  const [disabled, setDisabled] = useState(false);
 
   if (!isLoaded || !organization) {
-    return <>Loading</>
+    return <>Loading</>;
   }
 
-  const onSubmit = async (e) => {
-    e.preventDefault()
+  const onSubmit = async (e: any) => {
+    e.preventDefault();
 
     const submittedData = Object.fromEntries(
       new FormData(e.currentTarget).entries()
     ) as {
-      email: string | undefined
-      role: OrganizationCustomRoleKey | undefined
-    }
+      email: string | undefined;
+      role: OrganizationCustomRoleKey | undefined;
+    };
 
     if (!submittedData.email || !submittedData.role) {
-      return
+      return;
     }
 
-    setDisabled(true)
+    setDisabled(true);
     await organization.inviteMember({
       emailAddress: submittedData.email,
       role: submittedData.role,
-    })
-    await invitations?.revalidate?.()
-    setEmailAddress("")
-    setDisabled(false)
-  }
+    });
+    await invitations?.revalidate?.();
+    setEmailAddress('');
+    setDisabled(false);
+  };
 
   return (
     <form onSubmit={onSubmit}>
@@ -296,43 +294,43 @@ export const OrgInviteMemberForm = () => {
         onChange={(e) => setEmailAddress(e.target.value)}
       />
       <label>Role</label>
-      <SelectRole fieldName={"role"} />
+      <SelectRole fieldName={'role'} />
       <button type="submit" disabled={disabled}>
         Invite
       </button>
     </form>
-  )
-}
+  );
+};
 
 type SelectRoleProps = {
-  fieldName?: string
-  isDisabled?: boolean
-  onChange?: ChangeEventHandler<HTMLSelectElement>
-  defaultRole?: string
-}
+  fieldName?: string;
+  isDisabled?: boolean;
+  onChange?: ChangeEventHandler<HTMLSelectElement>;
+  defaultRole?: string;
+};
 
 const SelectRole = (props: SelectRoleProps) => {
-  const { fieldName, isDisabled = false, onChange, defaultRole } = props
-  const { organization } = useOrganization()
-  const [fetchedRoles, setRoles] = useState<OrganizationCustomRoleKey[]>([])
-  const isPopulated = useRef(false)
+  const { fieldName, isDisabled = false, onChange, defaultRole } = props;
+  const { organization } = useOrganization();
+  const [fetchedRoles, setRoles] = useState<OrganizationCustomRoleKey[]>([]);
+  const isPopulated = useRef(false);
 
   useEffect(() => {
-    if (isPopulated.current) return
+    if (isPopulated.current) return;
     organization
       ?.getRoles({
         pageSize: 20,
         initialPage: 1,
       })
       .then((res) => {
-        isPopulated.current = true
+        isPopulated.current = true;
         setRoles(
           res.data.map((roles) => roles.key as OrganizationCustomRoleKey)
-        )
-      })
-  }, [organization?.id])
+        );
+      });
+  }, [organization?.id]);
 
-  if (fetchedRoles.length === 0) return null
+  if (fetchedRoles.length === 0) return null;
 
   return (
     <select
@@ -348,5 +346,5 @@ const SelectRole = (props: SelectRoleProps) => {
         </option>
       ))}
     </select>
-  )
-}
+  );
+};
