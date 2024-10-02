@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { checkRole } from '@/utils/roles';
 import { SearchUsers } from './_search-users';
 import { clerkClient } from '@clerk/nextjs/server';
-import { setRole } from './_actions';
+import { removeRoles, setRole } from './_actions';
 
 export default async function AdminDashboard(params: {
   searchParams: { search?: string };
@@ -53,6 +53,11 @@ export default async function AdminDashboard(params: {
               <input type="hidden" value={user.id} name="id" />
               <input type="hidden" value="moderator" name="role" />
               <button type="submit">Make Moderator</button>
+            </form>
+
+            <form action={removeRoles}>
+              <input type="hidden" value={user.id} name="id" />
+              <button type="submit">Remove Role</button>
             </form>
           </div>
         );
