@@ -1,8 +1,8 @@
-import Image from "next/image";
-import Link from "next/link";
-import componentsImg from "./assets/components.svg";
-import { DownArrow, RightArrow } from "./icons";
-import "./home.css";
+import Image from 'next/image';
+import Link from 'next/link';
+import componentsImg from './assets/components.svg';
+import { DownArrow, RightArrow } from './icons';
+import './home.css';
 
 export default async function Home() {
   return (
@@ -19,7 +19,7 @@ export default async function Home() {
           <div className="flex gap-2 mt-8">
             <Link
               href="/dashboard"
-              className="flex content-center gap-2 px-4 py-2 font-semibold text-white transition-colors duration-200 rounded-lg bg-primary-600 hover:bg-primary-700"
+              className="flex gap-2 content-center px-4 py-2 font-semibold text-white rounded-lg transition-colors duration-200 bg-primary-600 hover:bg-primary-700"
             >
               View Demo
               <div className="m-auto">
@@ -27,7 +27,7 @@ export default async function Home() {
               </div>
             </Link>
             <a
-              className="flex gap-2 px-4 py-2 font-semibold text-gray-600 transition duration-100 rounded-lg hover:text-gray-800"
+              className="flex gap-2 px-4 py-2 font-semibold text-gray-600 rounded-lg transition duration-100 hover:text-gray-800"
               href="#features"
             >
               Learn more
@@ -48,7 +48,7 @@ export default async function Home() {
         <h2 className="text-3xl font-semibold">What's under the hood?</h2>
         <p className="mt-2">
           This template repo uses some of the following features provided by
-          Clerk. To learn more, read the{" "}
+          Clerk. To learn more, read the{' '}
           <a
             href="https://clerk.com/docs?utm_source=vercel-template&utm_medium=template_repos&utm_campaign=nextjs_template"
             className="font-medium text-primary-600 hover:underline"
@@ -58,7 +58,7 @@ export default async function Home() {
           .
         </p>
         <div className="grid gap-8 mt-8 lg:grid-cols-3">
-          <div className="flex flex-col h-56 gap-1 p-8 bg-white shadow-lg rounded-2xl">
+          <div className="flex flex-col gap-1 p-8 h-56 bg-white rounded-2xl shadow-lg">
             <h3 className="text-lg font-medium">Customizable Components</h3>
             <p className="text-gray-700">
               Prebuilt components to handle essential functionality like user
@@ -73,7 +73,7 @@ export default async function Home() {
               Components <span className="arrow">-&gt;</span>
             </a>
           </div>
-          <div className="flex flex-col h-56 gap-1 p-8 bg-white shadow-lg rounded-2xl">
+          <div className="flex flex-col gap-1 p-8 h-56 bg-white rounded-2xl shadow-lg">
             <h3 className="text-lg font-medium">React Hooks</h3>
             <p className="text-gray-700">
               Build custom functionality by accessing auth state, user and
@@ -88,7 +88,7 @@ export default async function Home() {
               React Hooks <span className="arrow">-&gt;</span>
             </a>
           </div>
-          <div className="flex flex-col h-56 gap-1 p-8 bg-white shadow-lg rounded-2xl">
+          <div className="flex flex-col gap-1 p-8 h-56 bg-white rounded-2xl shadow-lg">
             <h3 className="text-lg font-medium">Multitenancy</h3>
             <p className="text-gray-700">
               Seamlessly create and switch between organizations, invite and

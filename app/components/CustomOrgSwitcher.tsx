@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import { useOrganizationList } from "@clerk/nextjs";
+import { useOrganizationList } from '@clerk/nextjs';
 
 export const CustomOrganizationSwitcher = () => {
   const { isLoaded, setActive, userMemberships } = useOrganizationList({

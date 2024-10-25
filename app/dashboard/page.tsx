@@ -1,4 +1,4 @@
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { auth, clerkClient, createClerkClient } from '@clerk/nextjs/server';
 import { OrgDetails, SessionDetails, UserDetails } from './details';
 import Link from 'next/link';
 import { JoinedOrganizations } from '../components/UserMemberships';
@@ -10,13 +10,15 @@ import { UpdateOrganization } from '../components/UpdateOrg';
 import { OrgMembershipRequests } from '../components/MembershipRequests';
 
 export default async function DashboardPage() {
-  const { userId } = auth();
+  const { userId, orgPermissions } = await auth.protect();
 
-  if (!userId) {
-    auth().protect();
+  const user = await (await clerkClient()).users.getUser(userId);
+
+  if (!user) {
+    return <div>User not found</div>;
   }
 
-  const user = await clerkClient.users.getUser(userId!);
+  console.log(user, orgPermissions);
 
   return (
     <>

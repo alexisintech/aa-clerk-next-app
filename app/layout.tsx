@@ -3,24 +3,24 @@ import {
   OrganizationSwitcher,
   SignedIn,
   UserButton,
-} from "@clerk/nextjs";
-import "./globals.css";
-import { Inter } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
-import Script from "next/script";
-import { Docs, Github, Times } from "./icons";
-import { Twitter } from "./icons";
-import { Discord } from "./icons";
-import { Metadata } from "next";
+} from '@clerk/nextjs';
+import './globals.css';
+import { Inter } from 'next/font/google';
+import Image from 'next/image';
+import Link from 'next/link';
+import Script from 'next/script';
+import { Docs, Github, Times } from './icons';
+import { Twitter } from './icons';
+import { Discord } from './icons';
+import { Metadata } from 'next';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Next.js Clerk Template",
+  title: 'Next.js Clerk Template',
   description:
-    "A simple and powerful Next.js template featuring authentication and user management powered by Clerk.",
-  openGraph: { images: ["/og.png"] },
+    'A simple and powerful Next.js template featuring authentication and user management powered by Clerk.',
+  openGraph: { images: ['/og.png'] },
 };
 
 export default function RootLayout({
@@ -32,24 +32,24 @@ export default function RootLayout({
     <html lang="en">
       <ClerkProvider
         appearance={{
-          variables: { colorPrimary: "#000000" },
+          variables: { colorPrimary: '#000000' },
           elements: {
             formButtonPrimary:
-              "bg-black border border-black border-solid hover:bg-white hover:text-black",
+              'bg-black border border-black border-solid hover:bg-white hover:text-black',
             socialButtonsBlockButton:
-              "bg-white border-gray-200 hover:bg-transparent hover:border-black text-gray-600 hover:text-black",
-            socialButtonsBlockButtonText: "font-semibold",
+              'bg-white border-gray-200 hover:bg-transparent hover:border-black text-gray-600 hover:text-black',
+            socialButtonsBlockButtonText: 'font-semibold',
             formButtonReset:
-              "bg-white border border-solid border-gray-200 hover:bg-transparent hover:border-black text-gray-500 hover:text-black",
+              'bg-white border border-solid border-gray-200 hover:bg-transparent hover:border-black text-gray-500 hover:text-black',
             membersPageInviteButton:
-              "bg-black border border-black border-solid hover:bg-white hover:text-black",
-            card: "bg-[#fafafa]",
+              'bg-black border border-black border-solid hover:bg-white hover:text-black',
+            card: 'bg-[#fafafa]',
           },
         }}
       >
         <body className={`${inter.className} min-h-screen flex flex-col`}>
-          <header className="flex items-center h-20 gap-4 px-4 border-b border-black border-solid sm:px-8 border-opacity-20">
-            <Link href="/" className="flex items-center h-20 gap-2 sm:gap-4">
+          <header className="flex gap-4 items-center px-4 h-20 border-b border-black border-opacity-20 border-solid sm:px-8">
+            <Link href="/" className="flex gap-2 items-center h-20 sm:gap-4">
               <Image
                 src="/clerk.svg"
                 alt="Clerk Logo"
@@ -83,11 +83,11 @@ export default function RootLayout({
                   }}
                 />
               </div>
-              <UserButton afterSignOutUrl="/" />
+              <UserButton />
             </SignedIn>
           </header>
           <main className="grow">{children}</main>
-          <footer className="flex items-center h-20 gap-1 px-8 font-medium border-t md:px-20">
+          <footer className="flex gap-1 items-center px-8 h-20 font-medium border-t md:px-20">
             <Image
               src="/clerk.svg"
               alt="Clerk Logo"
@@ -98,7 +98,7 @@ export default function RootLayout({
             <span className="text-sm">© 2023</span>
             <nav className="flex justify-end grow sm:gap-2">
               <a
-                className="flex gap-2 px-3 py-2 text-sm font-semibold text-gray-600 transition duration-100 rounded-md hover:text-gray-800"
+                className="flex gap-2 px-3 py-2 text-sm font-semibold text-gray-600 rounded-md transition duration-100 hover:text-gray-800"
                 href="https://clerk.com/docs?utm_source=vercel-template&utm_medium=template_repos&utm_campaign=nextjs_template"
               >
                 <div className="m-auto">
@@ -108,7 +108,7 @@ export default function RootLayout({
                 <span className="inline sm:hidden"> Docs</span>
               </a>
               <a
-                className="flex gap-2 px-3 py-2 text-sm font-semibold text-gray-600 transition duration-100 rounded-md hover:text-gray-800"
+                className="flex gap-2 px-3 py-2 text-sm font-semibold text-gray-600 rounded-md transition duration-100 hover:text-gray-800"
                 href="https://github.com/devagrawal09/clerk-nextjs-template"
               >
                 <div className="m-auto">
